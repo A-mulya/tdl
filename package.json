@@ -3,20 +3,19 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "A todo list application with user authentication",
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "body": "^5.1.0",
     "body-parser": "^2.2.0",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
-    "mongoose": "^8.15.0",
-    "parser": "^0.1.4"
+    "mongoose": "^8.15.0"
   }
 }
