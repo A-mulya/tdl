@@ -1,34 +1,42 @@
-require('dotenv').config(); // Load environment variables at the top
-
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 
 const app = express();
 
-// Middleware
+// Configuration
 app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
+// Enhanced session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // true if using HTTPS
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }));
 
-// ✅ MongoDB Atlas Connection using env variable
-mongoose.connect(process.env.MONGO_URI, {
+// Database connection with production-ready URI
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/todolistDB", {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  retryWrites: true,
+  w: 'majority'
 })
 .then(() => console.log("Connected to MongoDB"))
 .catch(err => console.error("MongoDB connection error:", err));
 
-// Schemas
+// Schemas and Models
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -46,13 +54,13 @@ const itemSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 const Item = mongoose.model('Item', itemSchema);
 
-// Middleware to require login
+// Middleware
 const requireLogin = (req, res, next) => {
   if (!req.session.userId) return res.redirect('/login');
   next();
 };
 
-// Utility function
+// Helper Functions
 function formatDate() {
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -68,51 +76,51 @@ function formatDate() {
 }
 
 // Routes
-
-// Home Route
 app.get("/", requireLogin, async (req, res) => {
   try {
     const items = await Item.find({ 
       isDeleted: false, 
       userId: req.session.userId 
     }).sort({ createdAt: -1 });
+    
     res.render("list", {
       listTitle: formatDate(),
       newListItems: items,
-      username: req.session.username
+      username: req.session.username,
+      currentUrl: req.originalUrl
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error fetching items");
+    res.status(500).render('error', { message: "Error fetching items" });
   }
 });
 
-// Authentication
+// Authentication Routes
 app.get('/login', (req, res) => {
   if (req.session.userId) return res.redirect('/');
-  res.render('login', { error: null });
+  res.render('login', { error: null, currentUrl: req.originalUrl });
 });
 
 app.get('/register', (req, res) => {
   if (req.session.userId) return res.redirect('/');
-  res.render('register', { error: null });
+  res.render('register', { error: null, currentUrl: req.originalUrl });
 });
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await User.findOne({ username });
-    if (!user) return res.render('login', { error: 'Invalid username or password' });
-
+    if (!user) return res.render('login', { error: 'Invalid username or password', currentUrl: req.originalUrl });
+    
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.render('login', { error: 'Invalid username or password' });
-
+    if (!match) return res.render('login', { error: 'Invalid username or password', currentUrl: req.originalUrl });
+    
     req.session.userId = user._id;
     req.session.username = user.username;
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.status(500).send("Login error");
+    res.status(500).render('error', { message: "Login error" });
   }
 });
 
@@ -120,43 +128,43 @@ app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   try {
     const existingUser = await User.findOne({ username });
-    if (existingUser) return res.render('register', { error: 'Username already exists' });
-
+    if (existingUser) return res.render('register', { error: 'Username already exists', currentUrl: req.originalUrl });
+    
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
-
+    
     req.session.userId = newUser._id;
     req.session.username = newUser.username;
     res.redirect('/');
   } catch (err) {
     console.error(err);
-    res.status(500).send("Registration error");
+    res.status(500).render('error', { message: "Registration error" });
   }
 });
 
 app.post('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/login');
+  req.session.destroy(err => {
+    if (err) console.error('Session destruction error:', err);
+    res.redirect('/login');
+  });
 });
 
-// Item Management
+// Item Management Routes
 app.post('/add-item', requireLogin, async (req, res) => {
-  const itemName = req.body.newItem;
-  if (itemName && itemName.trim() !== "") {
-    try {
-      const item = new Item({ 
-        name: itemName, 
-        userId: req.session.userId 
-      });
-      await item.save();
-      res.redirect('/');
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error adding item");
-    }
-  } else {
+  const itemName = req.body.newItem?.trim();
+  if (!itemName) return res.redirect('/');
+  
+  try {
+    const item = new Item({ 
+      name: itemName, 
+      userId: req.session.userId 
+    });
+    await item.save();
     res.redirect('/');
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('error', { message: "Error adding item" });
   }
 });
 
@@ -169,12 +177,21 @@ app.post('/delete-item', requireLogin, async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error("Delete error:", err);
-    res.status(500).send("Error marking item as deleted");
+    res.status(500).render('error', { message: "Error deleting item" });
   }
 });
 
-// Server Start
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('error', { message: "Something broke!" });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`Visit: http://localhost:${PORT}`);
+  }
 });
