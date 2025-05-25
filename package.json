@@ -1,6 +1,7 @@
 {
   "name": "todolist",
   "version": "1.0.0",
+  "description": "A todo list application with user authentication",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -8,7 +9,6 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "A todo list application with user authentication",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
