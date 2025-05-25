@@ -26,14 +26,17 @@ app.use(session({
   }
 }));
 
-// Database connection with production-ready URI
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/todolistDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  retryWrites: true,
-  w: 'majority'
-})
-.then(() => console.log("Connected to MongoDB"))
+// Database connection with MongoDB Atlas
+mongoose.connect(
+  process.env.MONGODB_URI || "mongodb+srv://todolist-user:amulya22@cluster0.iz6ghgo.mongodb.net/todolistDB?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    retryWrites: true,
+    w: 'majority'
+  }
+)
+.then(() => console.log("Connected to MongoDB Atlas"))
 .catch(err => console.error("MongoDB connection error:", err));
 
 // Schemas and Models
