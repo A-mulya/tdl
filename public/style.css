@@ -1,0 +1,390 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+body {
+  background: linear-gradient(to bottom, #ffcdd2, #ffecb3);
+  font-family: 'Comic Neue', cursive;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: #5d4037;
+}
+
+.pooh-container {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 10;
+}
+
+.pooh-image {
+  height: 90vh;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(10px 10px 15px rgba(0, 0, 0, 0.2));
+}
+
+.speech-bubble {
+  position: absolute;
+  left: 75%;
+  top: 30%;
+  background: white;
+  padding: 20px 20px 20px 30px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  font-size: 20px;
+  color: #5d4037;
+  z-index: 20;
+  font-family: 'Comic Neue', cursive;
+}
+
+.speech-bubble:after {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 30%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-right-color: white;
+  border-left: 0;
+  margin-top: -10px;
+}
+
+.speech-text {
+  margin: 5px 0;
+  font-weight: 600;
+}
+
+.date-box {
+  background-color: #e6b800;
+  color: #5d4037;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: 'Comic Neue', cursive;
+}
+
+.empty-message {
+  color: #a1887f;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+  font-family: 'Comic Neue', cursive;
+}
+
+.main-content {
+  margin-left: 40%;
+  padding: 40px;
+  position: relative;
+  z-index: 5;
+}
+
+.container {
+  background: rgba(255, 253, 208, 0.9);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  min-height: 60vh;
+  border: 2px solid #e6b800;
+}
+
+.add-form {
+  display: flex;
+  margin-bottom: 25px;
+  align-items: center;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 12px 15px;
+  font-size: 16px;
+  border: 2px solid #e6b800;
+  border-radius: 8px;
+  outline: none;
+  height: 48px;
+  box-sizing: border-box;
+  background: #fff9c4;
+  font-family: 'Comic Neue', cursive;
+}
+
+input[type="text"]::placeholder {
+  color: #a1887f;
+}
+
+button[type="submit"] {
+  padding: 0 20px;
+  background-color: #e6b800;
+  border: none;
+  color: #5d4037;
+  font-size: 28px;
+  margin-left: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 48px;
+  line-height: 48px;
+  min-width: 48px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: 'Comic Neue', cursive;
+}
+
+button[type="submit"]:hover {
+  background-color: #ffd600;
+  transform: scale(1.05);
+}
+
+.items-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  padding: 14px 0;
+  border-bottom: 1px solid #ffe0b2;
+  display: flex;
+  align-items: center;
+}
+
+.item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.item-text {
+  font-size: 18px;
+  color: #5d4037;
+  flex-grow: 1;
+  padding-right: 15px;
+  word-break: break-word;
+  font-family: 'Comic Neue', cursive;
+}
+
+.delete-button {
+  background-color: #d84315;
+  color: white;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Comic Neue', cursive;
+}
+
+.delete-button:hover {
+  background-color: #bf360c;
+  transform: scale(1.1);
+}
+
+.logout-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.logout-button {
+  padding: 12px 20px;
+  background-color: #d84315;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Comic Neue', cursive;
+}
+
+.logout-button:hover {
+  background-color: #bf360c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Authentication styling */
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #ffcdd2, #ffecb3);
+  padding: 20px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  background: rgba(255, 253, 208, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e6b800;
+}
+
+.auth-title {
+  text-align: center;
+  color: #5d4037;
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-family: 'Comic Neue', cursive;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 10px; /* Added padding to align with container */
+}
+
+.auth-input,
+.auth-button {
+  width: calc(100% - 20px); /* Adjusted width to account for padding */
+  margin: 0 10px; /* Added margin to align properly */
+  padding: 12px 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: 'Comic Neue', cursive;
+}
+
+.auth-input {
+  border: 2px solid #e6b800;
+  background: #fff9c4;
+}
+
+.auth-button {
+  background-color: #e6b800;
+  color: #5d4037;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.auth-button:hover {
+  background-color: #ffd600;
+  transform: translateY(-2px);
+}
+
+.auth-link {
+  display: block;
+  text-align: center;
+  margin: 20px 10px 0; /* Added horizontal margin to align */
+  color: #e6b800;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: 'Comic Neue', cursive;
+}
+
+.error-message {
+  color: #d84315;
+  background: #ffebee;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: 'Comic Neue', cursive;
+}
+
+@media (max-width: 768px) {
+  .pooh-container {
+    width: 100%;
+    height: 40vh;
+    position: relative;
+    justify-content: center;
+  }
+
+  .pooh-image {
+    height: 35vh;
+  }
+
+  .speech-bubble {
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    padding-left: 20px;
+  }
+
+  .speech-bubble:after {
+    right: 50%;
+    top: -20px;
+    border: 20px solid transparent;
+    border-bottom-color: white;
+    border-top: 0;
+    margin-right: -20px;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 90%;
+    padding: 20px;
+  }
+
+  .container {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .logout-container {
+    position: static;
+    margin-top: 20px;
+    text-align: right;
+  }
+
+  .auth-container {
+    padding: 20px;
+  }
+}
+@media (max-width: 480px) {
+  .speech-bubble {
+    font-size: 16px;
+    max-width: 80%;
+  }
+  
+
+  .date-box {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+
+  .add-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  input[type="text"] {
+    margin-bottom: 10px;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .item-text {
+    font-size: 16px;
+  }
+}

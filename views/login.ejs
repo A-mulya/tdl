@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      <h1 class="auth-title">Welcome Back!</h1>
+      
+      <% if (error) { %>
+        <div class="error-message"><%= error %></div>
+      <% } %>
+
+      <form class="auth-form" action="/login" method="POST">
+        <input type="text" name="username" placeholder="Username" class="auth-input" required>
+        <input type="password" name="password" placeholder="Password" class="auth-input" required>
+        <button type="submit" class="auth-button">Login</button>
+      </form>
+
+      <a href="/register" class="auth-link">Create an account</a>
+    </div>
+  </div>
+</body>
+</html>

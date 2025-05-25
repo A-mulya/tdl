@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= listTitle %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="pooh-container">
+    <img src="/pooh.png" alt="Pooh" class="pooh-image">
+    <div class="speech-bubble">
+      <div class="speech-text">Hey <%= username %>!</div>
+      <div class="speech-text">So what are your plans for today...</div>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="container">
+      <div class="date-box">
+        <%= listTitle %>
+      </div>
+      <h2>Your Todo List</h2>
+      <form action="/add-item" method="POST" class="add-form">
+        <input type="text" name="newItem" placeholder="New Task" required>
+        <button type="submit">+</button>
+      </form>
+      <ul class="items-list">
+        <% if (newListItems.length === 0) { %>
+          <li class="empty-message">No tasks yet! Add one above.</li>
+        <% } %>
+        <% newListItems.forEach(function(item){ %>
+          <li class="item">
+            <div class="item-content">
+              <span class="item-text"><%= item.name %></span>
+              <form action="/delete-item" method="POST">
+                <button type="submit" name="deleteItem" value="<%= item._id %>" class="delete-button">×</button>
+              </form>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+      <div class="logout-container">
+        <form action="/logout" method="POST">
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
